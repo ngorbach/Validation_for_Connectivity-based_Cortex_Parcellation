@@ -303,7 +303,7 @@ for  ktrue = nClusters
             scaled_cost1 = -beta * potential1;
             % log-sum-exp trick to prevent underflow
             max_scaled_cost1 = max(scaled_cost1,[],2);
-            log_partition_sum1 = max_scaled_cost1 + log(sum(exp(scaled_cost1-max_scaled_cost1),2));
+            log_partition_sum1 = max_scaled_cost1 + log(sum(exp(bsxfun(@minus,scaled_cost1,max_scaled_cost1)),2));
             
             %%% Log partition sum for instance 2
             % Determine log partition sum while avoiding underflow:
@@ -311,7 +311,7 @@ for  ktrue = nClusters
             scaled_cost2 = -beta * potential2;
             % log-sum-exp trick to prevent underflow
             max_scaled_cost2 = max(scaled_cost2,[],2);
-            log_partition_sum2 = max_scaled_cost2 + log(sum(exp(scaled_cost2-max_scaled_cost2),2));
+            log_partition_sum2 = max_scaled_cost2 + log(sum(exp(bsxfun(@minus,scaled_cost2,max_scaled_cost2)),2));
             
             %%% Joint log partition sum
             % Determine joint log partition sum while avoiding underflow:
@@ -320,7 +320,7 @@ for  ktrue = nClusters
             gibbs_dist_joint = bsxfun(@rdivide,joint_scaled_cost,sum(joint_scaled_cost,2));
             % log-sum-exp trick to prevent underflow
             max_scaled_cost3 = max(joint_scaled_cost,[],2);
-            log_joint_partition_sum = max_scaled_cost3 + log(sum(exp(joint_scaled_cost-max_scaled_cost3),2));
+            log_joint_partition_sum = max_scaled_cost3 + log(sum(exp(bsxfun(@minus,joint_scaled_cost,max_scaled_cost3)),2));
             
             %%
             

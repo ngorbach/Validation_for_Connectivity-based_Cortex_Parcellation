@@ -210,7 +210,7 @@ for n = 1:length(diffusion)
         scaled_cost1 = -beta * potential1;
         % log-sum-exp trick to prevent underflow
         max_scaled_cost1 = max(scaled_cost1,[],2);
-        log_partition_sum1 = max_scaled_cost1 + log(sum(exp(scaled_cost1-max_scaled_cost1),2));
+        log_partition_sum1 = max_scaled_cost1 + log(sum(exp(bsxfun(@minus,scaled_cost1,max_scaled_cost1)),2));
         
         %%% Log partition sum for instance 2
         % Determine log partition sum while avoiding underflow:
@@ -218,7 +218,7 @@ for n = 1:length(diffusion)
         scaled_cost2 = -beta * potential2;
         % log-sum-exp trick to prevent underflow
         max_scaled_cost2 = max(scaled_cost2,[],2);
-        log_partition_sum2 = max_scaled_cost2 + log(sum(exp(scaled_cost2-max_scaled_cost2),2));
+        log_partition_sum2 = max_scaled_cost2 + log(sum(exp(bsxfun(@minus,scaled_cost2,max_scaled_cost2)),2));
         
         %%% Joint log partition sum
         % Determine joint log partition sum while avoiding underflow:
@@ -226,7 +226,7 @@ for n = 1:length(diffusion)
         joint_scaled_cost = -beta * (potential1 + potential2);
         % log-sum-exp trick to prevent underflow
         max_scaled_cost3 = max(joint_scaled_cost,[],2);
-        log_joint_partition_sum = max_scaled_cost3 + log(sum(exp(joint_scaled_cost-max_scaled_cost3),2));
+        log_joint_partition_sum = max_scaled_cost3 + log(sum(exp(bsxfun(@minus,joint_scaled_cost,max_scaled_cost3)),2));
         
         %%
         j = j+1;
