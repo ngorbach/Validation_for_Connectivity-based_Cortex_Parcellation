@@ -16,7 +16,9 @@ for i = 2:4
     h{i}.Box = 'on';
     h{i}.XLabel.String = 'time'; h{i}.XLabel.FontSize = 20;
 end
-
+h{2}.Title.String = ['GCM Gibbs distribution, low stochasticity'];
+h{3}.Title.String = ['GCM Gibbs distribution, med stochasticity'];
+h{4}.Title.String = ['GCM Gibbs distribution, high stochasticity'];
 % yyaxis right; h{2} = gca; h{2}.YTick = []; h{2}.YLabel.String = 'target space'; h{2}.YLabel.FontSize = 20;
 % h{2}.YLabel.Color = [0,0,0]; 
 % yyaxis left; h{1}.YLabel.Color = [0,0,0];
