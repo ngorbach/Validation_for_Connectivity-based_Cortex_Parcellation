@@ -42,10 +42,11 @@ clear all; close all; clc
 % for a range of actual number of clusters (rows).
 
 %% Input
-nsamples = 300;
+nsamples = 300;         % number of fiber tracking samples
 edges = [1:1:800];
-K = 2:12;
-nClusters = 2:7;
+K = 2:12;               % range of number of clusters used to for estimation
+nClusters = 2:7;        % number of true clusters
+fiber_spread = 'high';  % value set to "low" or high" to adjust the noise level
 %%
 
 % interpolate seed coord
@@ -114,6 +115,13 @@ for  ktrue = nClusters
     h = setup_plots;
     colors = distinguishable_colors(length(fiber_assignment));
     
+    
+    if strcmp(fiber_spread,'low')
+        fiber_spread_val = 5e1;
+    elseif strcmp(fiber_spread,'high')
+        fiber_spread_val = 5e2;
+    end
+                
     for m = 1:2
         for i = 1:size(seed_coords,1)
             clear spline_sample
@@ -124,7 +132,8 @@ for  ktrue = nClusters
                 sample_idx = fiber_assignment{label(i)}(sample_idx);
                 seed_coord_ctrl_pts = ctrl_pts2(:,:,sample_idx);
                 seed_coord_ctrl_pts(1,:) = seed_coords(i,:);
-                spline_sample{j} = sample_spline(5e1,1e4,seed_coord_ctrl_pts,line_obs{sample_idx});
+                
+                spline_sample{j} = sample_spline(fiber_spread_val,1e4,seed_coord_ctrl_pts,line_obs{sample_idx});
                 target_coord{m}(j,:,i) = round(spline_sample{j}(end,:));
                 
                 s(i) = sample_idx;
