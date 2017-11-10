@@ -40,7 +40,8 @@ for n = 1:length(diffusion)
     yyaxis left; h{1}.YLabel.Color = [0,0,0];
 end
 h{1}.XLim(2) = 3;
-legend(h{1},['SDE diffusion = ' num2str(diffusion(1))],['SDE diffusion = ' num2str(diffusion(2))],['SDE diffusion = ' num2str(diffusion(3))],'Location','SouthEast','Box','off')
+%legend(h{1},['SDE diffusion = ' num2str(diffusion(1))],['SDE diffusion = ' num2str(diffusion(2))],['SDE diffusion = ' num2str(diffusion(3))],'Location','SouthEast','Box','off')
+legend(h{1},'low stochasticity','medium stochasticity','high stochasticity','Location','SouthEast','Box','off')
 
 figure(3); clf 
 set(3, 'Position', [0, 200, 1000, 400]); axis tight
@@ -48,13 +49,16 @@ for n = 1:3
     c = zeros(size(connectivity_matrix{n}{1},1),length(rem_idx(n,:)));
     c(:,~rem_idx(n,:)) = connectivity_matrix{n}{1};
     c = sum(c,1);
-    s = subplot(1,3,n);
+    s{n} = subplot(1,3,n);
     c2 = zeros(1,length(c)); c2(1:end) = c(1:end); a = area(c2); a.FaceColor =[117,112,179]./255; hold on;
 %     c2 = zeros(1,length(c)); c2(12:35) = c(12:35); a = area(c2); a.FaceColor = [117,112,179]./255; hold on;
 %     c2 = zeros(1,length(c)); c2(36:end) = c(36:end); a = area(c2); a.FaceColor = [117,112,179]./255; hold on;
    %plot(c,'LineWidth',2); hold on;
-    s.XLim = [0,60]; s.XTick = []; s.YTick = []; s.Title.String = ['Diffusion = ' num2str(diffusion(n))]; s.Title.FontSize = 15;
+    s{n}.XLim = [0,60]; s{n}.XTick = []; s{n}.YTick = []; s{n}.Title.String = ['SDE Diffusion = ' num2str(diffusion(n))]; s{n}.Title.FontSize = 15;
 end
+s{1}.Title.String = 'low stochasticity';
+s{2}.Title.String = 'med stochasticity';
+s{3}.Title.String = 'high stochasticity';
 
 %% Centroid dendrogram
 
@@ -83,7 +87,9 @@ for n = 1:length(diffusion)
     strmax = ['k_{effective} = ' num2str(length(unique(centroid_labels{n})))];
     text(h{1},xmax,ymax,strmax,'HorizontalAlignment','left','FontSize',15);
 end
-
+s2{1}.Title.String = 'low stochasticity';
+s2{2}.Title.String = 'med stochasticity';
+s2{3}.Title.String = 'high stochasticity';
 %% ERM and GCM consistency
 figure(5); clf 
 set(5, 'Position', [0, 200, 1200, 800]); axis tight
