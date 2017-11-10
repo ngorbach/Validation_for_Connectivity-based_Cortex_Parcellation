@@ -88,7 +88,7 @@ confusion_matrix.bayes_evidence2 = zeros(max(nClusters),max(K));
 tic;
 
 %%
-n_experiments =  1;
+n_experiments =  20;
 for n = 1:n_experiments
 for  ktrue = nClusters
     clear fiber_assignment connectivity_matrix target_coord

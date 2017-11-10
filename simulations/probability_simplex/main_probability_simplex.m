@@ -198,7 +198,7 @@ for k = K
         %%% Log partition sum for instance 1
         % Determine log partition sum while avoiding underflow:
         % $\log Z_1 = \sum_i \log \sum_k \exp \left( -\beta R_{ik}^{(1)} \right)$
-        scaled_cost1 = -beta * potential1;
+        scaled_cost1 = -beta .* potential1;
         % log-sum-exp trick to prevent underflow
         max_scaled_cost1 = max(scaled_cost1,[],2);
         log_partition_sum1 = max_scaled_cost1 + log(sum(exp(bsxfun(@minus,scaled_cost1,max_scaled_cost1)),2));
@@ -206,7 +206,7 @@ for k = K
         %%% Log partition sum for instance 2
          % Determine log partition sum while avoiding underflow:
         % $\log Z_2 = \sum_i \log \sum_k \exp \left( -\beta R_{ik}^{(2)} \right)$
-        scaled_cost2 = -beta * potential2;
+        scaled_cost2 = -beta .* potential2;
         % log-sum-exp trick to prevent underflow
         max_scaled_cost2 = max(scaled_cost2,[],2);
         log_partition_sum2 = max_scaled_cost2 + log(sum(exp(bsxfun(@minus,scaled_cost2,max_scaled_cost2)),2));
@@ -214,7 +214,7 @@ for k = K
         %%% Joint log partition sum
         % Determine joint log partition sum while avoiding underflow:
         % $\log Z_{12} = \sum_i \log \sum_k \exp \left( -\beta ( R_{ik}^{(1)} + R_{ik}^{(2)} )  \right)$
-        joint_scaled_cost = -beta * (potential1 + potential2);
+        joint_scaled_cost = -beta .* (potential1 + potential2);
         % log-sum-exp trick to prevent underflow
         max_scaled_cost3 = max(joint_scaled_cost,[],2);
         log_joint_partition_sum = max_scaled_cost3 + log(sum(exp(bsxfun(@minus,joint_scaled_cost,max_scaled_cost3)),2));
