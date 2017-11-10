@@ -40,7 +40,7 @@ for n = 1:length(diffusion)
     yyaxis left; h{1}.YLabel.Color = [0,0,0];
 end
 h{1}.XLim(2) = 3;
-%legend(h{1},['diffusion = ' num2str(diffusion(1))],['diffusion = ' num2str(diffusion(2))],['diffusion = ' num2str(diffusion(3))],'Location','SouthEast','Box','off')
+legend(h{1},['SDE diffusion = ' num2str(diffusion(1))],['SDE diffusion = ' num2str(diffusion(2))],['SDE diffusion = ' num2str(diffusion(3))],'Location','SouthEast','Box','off')
 
 figure(3); clf 
 set(3, 'Position', [0, 200, 1000, 400]); axis tight
@@ -73,7 +73,7 @@ for n = 1:length(diffusion)
     hold on; plot(s2{n},[0,size(dsim_centroids,1)+0.5],[0.08,0.08],'--','LineWidth',2)
     s2{n}.FontSize = 15;
     s2{n}.YLim(1) = 0; 
-    s2{n}.Title.String = ['Diffusion = ' num2str(diffusion(n))];
+    s2{n}.Title.String = ['SDE Diffusion = ' num2str(diffusion(n))];
     centroid_labels{n} = cluster(linkage(dsim_centroids),'cutoff',0.08,'criterion','distance');
     h{n+1}.Title.String = [h{n+1}.Title.String ', k_{effective} = ' num2str(length(unique(centroid_labels{n})))];
     
@@ -81,7 +81,7 @@ for n = 1:length(diffusion)
     xmax = inv_temp(indexmax);
     ymax = gc{n}(indexmax);
     strmax = ['k_{effective} = ' num2str(length(unique(centroid_labels{n})))];
-    %text(h{1},xmax,ymax,strmax,'HorizontalAlignment','left','FontSize',15);
+    text(h{1},xmax,ymax,strmax,'HorizontalAlignment','left','FontSize',15);
 end
 
 %% ERM and GCM consistency
