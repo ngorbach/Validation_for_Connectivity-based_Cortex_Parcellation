@@ -1,6 +1,8 @@
-# Validation_for_Connectivity-based_Cortex_Parcellation
+# Validation for Connectivity-based Cortex Parcellation
 
-**Author: Nico Stephan Gorbach**
+![Alt text](pa.png)
+
+Author: **Nico Stephan Gorbach**
 
 Code for the paper **Pipeline Validation for Connectivity-based Cortex Parcellation** by Nico S. Gorbach, Marc Tittgemeyer and Joachim M. Buhmann. 
 
