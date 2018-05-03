@@ -1,4 +1,4 @@
-# Validation for Connectivity-based Cortex Parcellation
+# Validation for Connectivity-based Cortex Parcellation by Posterior Agreement
 
 ![Alt text](PA.png)
 
