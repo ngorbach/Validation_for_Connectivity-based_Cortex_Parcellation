@@ -4,7 +4,7 @@
 
 Author: **Nico Stephan Gorbach**
 
-Code for the paper **Pipeline Validation for Connectivity-based Cortex Parcellation** by Nico S. Gorbach, Marc Tittgemeyer and Joachim M. Buhmann. 
+Code for the paper **Pipeline Validation for Connectivity-based Cortex Parcellation** by Nico S. Gorbach, Marc Tittgemeyer and Joachim M. Buhmann (in submission). 
 
 The Matlab image processing toolbox is required.
 
