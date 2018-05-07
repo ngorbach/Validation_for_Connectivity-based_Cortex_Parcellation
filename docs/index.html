@@ -1,0 +1,650 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>POSTERIOR AGREEMENT FOR CONNECTIVITY-BASED CORTEX PARCELLATION</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-07"><meta name="DC.source" content="main_cortex_parcellation.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>POSTERIOR AGREEMENT FOR CONNECTIVITY-BASED CORTEX PARCELLATION</h1><!--introduction--><p><img vspace="5" hspace="5" src="PA.png" alt=""> </p><p><b>Author: Nico Stephan Gorbach</b> , Institute of Machine Learning, ETHZ, email: <a href="mailto:nico.gorbach@inf.ethz.ch">nico.gorbach@inf.ethz.ch</a></p><p>Implementation of " <b>Pipeline Validation for Connectivity-based Cortex Parcellation</b> " by Nico S. Gorbach, Marc Tittgemeyer and Joachim M. Buhmann. The doctoral thesis <a href="https://www.research-collection.ethz.ch/handle/20.500.11850/261734">https://www.research-collection.ethz.ch/handle/20.500.11850/261734</a> describes this algorithm in more detail.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Introduction</a></li><li><a href="#3">Input</a></li><li><a href="#4">Imports</a></li><li><a href="#5">Distance between connectivity matrices</a></li><li><a href="#6">Nearest neighbours for smooth histogram clustering</a></li><li><a href="#11">Deterministic annealing</a></li><li><a href="#14">Perturb centroids</a></li><li><a href="#15">Expectation maximization</a></li><li><a href="#16">Costs for histogram clustering given instance 1</a></li><li><a href="#17">Costs for histogram clustering given instance 2</a></li><li><a href="#18">Smoothness potential</a></li><li><a href="#19">Gibbs distribution 1</a></li><li><a href="#20">Gibbs distribution 2</a></li><li><a href="#21">Joint Gibbs distribution</a></li><li><a href="#22">Centroids for instance 1</a></li><li><a href="#23">Centroids for instance 2</a></li><li><a href="#25">Match clusters across data instances</a></li><li><a href="#26">Log partition sum for instance 1</a></li><li><a href="#27">Log partition sum for instance 2</a></li><li><a href="#28">Joint log partition sum</a></li><li><a href="#30">Generalization capacity</a></li><li><a href="#33">Number of equivariant transformations</a></li><li><a href="#35">Information content (ASC)</a></li><li><a href="#36">Bayesian Information Criterion (BIC)</a></li><li><a href="#37">Akaike Information Criterion (AIC)</a></li><li><a href="#38">Bayesian evidence</a></li><li><a href="#39">Number of misclustered seed voxels</a></li><li><a href="#40">Distance between centroids</a></li><li><a href="#41">Results</a></li><li><a href="#43">Runtime</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>
+</pre><h2 id="2">Introduction</h2><p>This instuctional code demonstrates validation by posterior agreement for connectivity-based cortex parcellation of diffusion weighted imaging data. We assume that a connectivity matrix is given. In particular, we validate histogram clustering. Additionally, we provide the option of validating smooth histogram clustering (by setting smooth_clustering=true in the input) which adds a spatial regularity to the seed voxels.</p><h2 id="3">Input</h2><pre class="codeinput">path.connectivity_matrix = <span class="string">'./5203/neighbourhood_tracking/45_directions/connectivity_matrix.mat'</span>;    <span class="comment">% path to connectivity matrix</span>
+path.seed_coords = <span class="string">'./5203/neighbourhood_tracking/45_directions/seed_coords.txt'</span>;                    <span class="comment">% path to seed coordinates</span>
+path.results_directory = <span class="string">'./5203/neighbourhood_tracking/45_directions/'</span>;                             <span class="comment">% directory to save results</span>
+K = 2:3:29;                                                     <span class="comment">% number of potential clusters (vector of integers)</span>
+
+<span class="comment">% Smooth histogram clustering</span>
+smooth_clustering = false;                                    <span class="comment">% perform standard histogram clustering or smooth histogram clustering (Boolean)</span>
+smooth_weighting = 10;                                        <span class="comment">% weight of the smoothness penalty (real positive number)</span>
+number_of_neighbours = 80;                                    <span class="comment">% number of neighbours %20,50,80</span>
+</pre><h2 id="4">Imports</h2><pre class="codeinput">connectivity_matrix = importdata(path.connectivity_matrix);
+seed_coords = importdata(path.seed_coords);
+</pre><h2 id="5">Distance between connectivity matrices</h2><pre class="codeinput">seed_idx = randperm(size(connectivity_matrix{1},1)); seed_idx = sort(seed_idx(1:1000));
+p = bsxfun(@rdivide,connectivity_matrix{1}(seed_idx,:),sum(connectivity_matrix{1}(seed_idx,:),2));
+q = bsxfun(@rdivide,connectivity_matrix{2}(seed_idx,:),sum(connectivity_matrix{2}(seed_idx,:),2));
+<span class="keyword">for</span> i = 1:size(p,1)
+    dsim_across_instances.JSDiv(i) = JSDiv(p(i,:),q(i,:));
+    dsim_across_instances.euclid(i) = pdist2(p(i,:),q(i,:));
+    dsim_across_instances.hamming = pdist2(double(logical(p(i,:))),double(logical(q(i,:))),<span class="string">'hamming'</span>);
+<span class="keyword">end</span>
+
+disp([<span class="string">'Average Jenson Shannon distance between connectivity matrices: '</span> num2str(mean(dsim_across_instances.JSDiv))]);
+disp([<span class="string">'Average Euclidean distance between connectivity matrices: '</span> num2str(mean(dsim_across_instances.euclid))]);
+disp([<span class="string">'Average Hamming distance between connectivity matrices: '</span> num2str(mean(dsim_across_instances.hamming))]);
+<span class="comment">%</span>
+</pre><pre class="codeoutput">Average Jenson Shannon distance between connectivity matrices: 0.54531
+Average Euclidean distance between connectivity matrices: 0.066218
+Average Hamming distance between connectivity matrices: 0.012698
+</pre><h2 id="6">Nearest neighbours for smooth histogram clustering</h2><pre class="codeinput"><span class="keyword">if</span> smooth_clustering
+    dsim_seed_coords = pdist2(seed_coords,seed_coords);
+    dsim_seed_coords(logical(eye(size(dsim_seed_coords,1)))) = realmax;
+    [nearest_neighbours.dist,nearest_neighbours.idx] = sort(dsim_seed_coords,2,<span class="string">'ascend'</span>);
+    nearest_neighbours.dist = nearest_neighbours.dist(:,1:number_of_neighbours);
+    nearest_neighbours.idx = nearest_neighbours.idx(:,1:number_of_neighbours);
+<span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="comment">% remove zero columns</span>
+rm_idx(1,:) = sum(connectivity_matrix{1},1)==0;
+rm_idx(2,:) = sum(connectivity_matrix{2},1)==0;
+connectivity_matrix{1}(:,rm_idx(1,:)) = [];
+connectivity_matrix{2}(:,rm_idx(2,:)) = [];
+</pre><pre class="codeinput"><span class="comment">% dissimilarity matrix</span>
+<span class="keyword">if</span> exist([path.results_directory <span class="string">'dsim.mat1'</span>])
+    dsim = importdata([path.results_directory <span class="string">'dsim.mat'</span>]);
+<span class="keyword">else</span>
+    <span class="comment">%d = connectivity_matrix{1}; d(:,sum(d,1)&lt;4000) = [];</span>
+    d = connectivity_matrix{1}; d(:,sum(d,1)&lt;600) = []; d = single(full(d));
+    dsim = pdist2(d,d);
+<span class="comment">%     d = bsxfun(@rdivide,d,sum(d,2));</span>
+<span class="comment">%     log_d = d; log_d(log_d==0) = eps; log_d = log(log_d);</span>
+<span class="comment">%     dsim = single(full(-d * log_d'));</span>
+<span class="comment">%     dsim = flipdim(flipdim((dsim + dsim') / 2,1),2);</span>
+<span class="comment">%     dsim(logical(eye(size(dsim,1)))) = mean(mean(dsim));</span>
+<span class="comment">%     save([path.results_directory 'dsim.mat'],'dsim','-v7.3');</span>
+<span class="comment">%     clear d log_d</span>
+<span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="comment">% preprocessing for Bayesian evidence</span>
+
+alpha{1} = full(sum(connectivity_matrix{1},1));
+alpha{2} = full(sum(connectivity_matrix{1},1))/100;
+</pre><pre class="codeinput"><span class="comment">% start timer</span>
+tic;
+</pre><h2 id="11">Deterministic annealing</h2><p>Determine global minimizer.</p><pre class="codeinput"><span class="comment">% Annealing settings</span>
+inv_temp_init = 1/1000;                 <span class="comment">% starting inverse temperature (5000 for smooth hc)</span>
+inv_temp_step = 1.1;                    <span class="comment">% inverse temperature step</span>
+inv_temp_stop = 1/10;                   <span class="comment">% stopping inverse temperature</span>
+perturb_sd = 1e-6;                      <span class="comment">% centroid perturbation</span>
+
+<span class="keyword">for</span> k = K
+</pre><pre class="codeinput">    <span class="comment">% Initialization of Gibbs distributions</span>
+    gibbs_dist1 = ones(size(connectivity_matrix{1},1),k) ./ k;
+    gibbs_dist2 = ones(size(connectivity_matrix{2},1),k) ./ k;
+
+    <span class="comment">% Initialization of centroids</span>
+    centroids1 = gibbs_dist1'*connectivity_matrix{1};
+    centroids1 = bsxfun(@rdivide,centroids1,sum(centroids1,2));
+    centroids1(centroids1==0) = eps;
+    centroids2 = gibbs_dist2'*connectivity_matrix{2};
+    centroids2 = bsxfun(@rdivide,centroids2,sum(centroids2,2));
+    centroids2(centroids2==0) = eps;
+
+    j = 0; inv_temp = inv_temp_init; inv_temp_pack = []; <span class="comment">%subplot(2,2,3); cla</span>
+    <span class="keyword">while</span> inv_temp &lt;= inv_temp_stop
+</pre><h2 id="14">Perturb centroids</h2><p>Avoid local minimum by perturbing centroids: <img src="main_cortex_parcellation_eq00657792805889241601.png" alt="$\phi_{kj}^{(\cdot)} = \phi_{kj}^{(\cdot)} + \epsilon$" style="width:63px;height:17px;"></p><pre class="codeinput">        centroids1 = centroids1 + perturb_sd * rand(size(centroids1));
+        centroids1 = bsxfun(@rdivide,centroids1,sum(centroids1,2)); <span class="comment">% normalize</span>
+        centroids2 = centroids2 + perturb_sd * rand(size(centroids2));
+        centroids2 = bsxfun(@rdivide,centroids2,sum(centroids2,2)); <span class="comment">% normalize</span>
+</pre><h2 id="15">Expectation maximization</h2><p>Iterate between determining Gibbs distributions and maximzing variational lower bound w.r.t. centroids.</p><pre class="codeinput">        <span class="keyword">for</span> iter = 1:10
+</pre><h2 id="16">Costs for histogram clustering given instance 1</h2><p>KL divergence between empirical probabilities (data) and centroid probabilities (up to proportionality constant): <img src="main_cortex_parcellation_eq08373992262661706917.png" alt="$R_{ik}^{(1)} = -\sum_{j} x_{ij}^{(1)} \log(\phi_{kj}^{(1)})$" style="width:119px;height:17px;"></p><pre class="codeinput">            potential1 = -connectivity_matrix{1} * log(centroids1)';
+</pre><h2 id="17">Costs for histogram clustering given instance 2</h2><p>KL divergence between empirical probabilities (data) and centroid probabilities (up to proportionality constant): <img src="main_cortex_parcellation_eq14470087101677573895.png" alt="$R_{ik}^{(2)} = -\sum_{j} x_{ij}^{(2)} \log(\phi_{kj}^{(2)})$" style="width:119px;height:17px;"></p><pre class="codeinput">            potential2 = -connectivity_matrix{2} * log(centroids2)';
+</pre><h2 id="18">Smoothness potential</h2><pre class="codeinput">            <span class="keyword">if</span> smooth_clustering
+                smooth_potential1 = blockfun(1-gibbs_dist1(nearest_neighbours.idx',:),<span class="keyword">...</span>
+                    [size(nearest_neighbours.idx,2),1],@sum);
+
+                smooth_potential2 = blockfun(1-gibbs_dist2(nearest_neighbours.idx',:),<span class="keyword">...</span>
+                    [size(nearest_neighbours.idx,2),1],@sum);
+
+                potential1 = potential1 + smooth_weighting * smooth_potential1;
+                potential2 = potential2 + smooth_weighting * smooth_potential2;
+            <span class="keyword">end</span>
+</pre><h2 id="19">Gibbs distribution 1</h2><p>Maximum entropy distribution: <img src="main_cortex_parcellation_eq04115272212719140819.png" alt="$p_{ik}^{(1)} = \exp \left( -\beta R_{ik}^{(1)} \right) / Z$" style="width:112px;height:20px;"></p><pre class="codeinput">            gibbs_dist1 = exp(-inv_temp * potential1);
+            partition_sum1 = sum(gibbs_dist1,2);
+            gibbs_dist1 = bsxfun(@rdivide,gibbs_dist1,partition_sum1);
+
+            <span class="comment">% avoid underflow</span>
+            idx = find(partition_sum1==0);
+            <span class="keyword">if</span> ~isempty(idx)
+                [~,min_cost_idx] = min(potential1(idx,:),[],2);
+                max_ind = sub2ind(size(gibbs_dist1),idx,min_cost_idx);
+                gibbs_dist1(idx,:) = zeros(length(idx),k);
+                gibbs_dist1(max_ind) = 1;
+            <span class="keyword">end</span>
+</pre><h2 id="20">Gibbs distribution 2</h2><p>Maximum entropy distribution: <img src="main_cortex_parcellation_eq17712409327870511715.png" alt="$p_{ik}^{(2)} = \exp \left(-\beta R_{ik}^{(2)} \right) / Z$" style="width:112px;height:20px;"></p><pre class="codeinput">            gibbs_dist2 = exp(-inv_temp * potential2);
+            partition_sum2 = sum(gibbs_dist2,2);
+            gibbs_dist2 = bsxfun(@rdivide,gibbs_dist2,partition_sum2);
+
+            <span class="comment">% avoid underflow</span>
+            idx = find(partition_sum2==0);
+            <span class="keyword">if</span> ~isempty(idx)
+                [~,min_cost_idx] = min(potential2(idx,:),[],2);
+                max_ind = sub2ind(size(gibbs_dist2),idx,min_cost_idx);
+                gibbs_dist2(idx,:) = zeros(length(idx),k);
+                gibbs_dist2(max_ind) = 1;
+            <span class="keyword">end</span>
+</pre><h2 id="21">Joint Gibbs distribution</h2><p>Maximum entropy distribution: <img src="main_cortex_parcellation_eq01026291022421135752.png" alt="$p_{ik}^{(1,2)} = \exp \left(-\beta ( R_{ik}^{(1)} + R_{ik}^{(2)}) \right) / Z$" style="width:159px;height:20px;"></p><pre class="codeinput">            dist_joint = exp(-inv_temp * (potential1 + potential2));
+            joint_partition_sum = sum(dist_joint,2);
+</pre><h2 id="22">Centroids for instance 1</h2><p>Probability prototype: <img src="main_cortex_parcellation_eq09863515348217012097.png" alt="$\phi_{kj}^{(1)} = \frac{\sum_i p_{ik}^{(1)} x_{ij}^{(1)}}{\sum_j \sum_{i'} p_{i'k}^{(1)} x_{i'j}^{(1)}}$" style="width:90px;height:27px;"></p><pre class="codeinput">            centroids1 = gibbs_dist1'*connectivity_matrix{1};
+            centroids1 = bsxfun(@rdivide,centroids1,sum(centroids1,2));
+            centroids1(centroids1==0) = eps;
+</pre><h2 id="23">Centroids for instance 2</h2><p>Probability prototype: <img src="main_cortex_parcellation_eq00293485138018580756.png" alt="$\phi_{kj}^{(2)} = \frac{\sum_i p_{ik}^{(2)} x_{ij}^{(2)}}{\sum_j \sum_{i'} p_{i'k}^{(2)} x_{i'j}^{(2)}}$" style="width:90px;height:27px;"></p><pre class="codeinput">            centroids2 = gibbs_dist2'*connectivity_matrix{2};
+            centroids2 = bsxfun(@rdivide,centroids2,sum(centroids2,2));
+            centroids2(centroids2==0) = eps;
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">        <span class="comment">% increase inverse temperature:</span>
+        inv_temp = inv_temp * inv_temp_step;
+</pre><h2 id="25">Match clusters across data instances</h2><p>Use Hungarian algorithm to match clusters.</p><pre class="codeinput">        c1 = zeros(k,length(rm_idx(1,:))); c2 = zeros(k,length(rm_idx(2,:)));
+        c1(:,~rm_idx(1,:)) = centroids1; c2(:,~rm_idx(2,:)) = centroids2;
+        match_clusters_idx = munkres(pdist2(c1,c2));
+        potential2=potential2(:,match_clusters_idx);
+</pre><h2 id="26">Log partition sum for instance 1</h2><p>Determine log partition sum while avoiding underflow: <img src="main_cortex_parcellation_eq16546713842241333105.png" alt="$\log Z_1 = \sum_i \log \sum_k \exp \left( -\beta R_{ik}^{(1)} \right)$" style="width:158px;height:20px;"></p><pre class="codeinput">        scaled_cost1 = -inv_temp * potential1;
+        <span class="comment">% log-sum-exp trick to prevent underflow</span>
+        max_scaled_cost1 = max(scaled_cost1,[],2);
+        log_partition_sum1 = max_scaled_cost1 + log(sum(exp(bsxfun(@minus,scaled_cost1,max_scaled_cost1)),2));
+</pre><h2 id="27">Log partition sum for instance 2</h2><p>Determine log partition sum while avoiding underflow: <img src="main_cortex_parcellation_eq15044720363000448952.png" alt="$\log Z_2 = \sum_i \log \sum_k \exp \left( -\beta R_{ik}^{(2)} \right)$" style="width:158px;height:20px;"></p><pre class="codeinput">        scaled_cost2 = -inv_temp * potential2;
+        <span class="comment">% log-sum-exp trick to prevent underflow</span>
+        max_scaled_cost2 = max(scaled_cost2,[],2);
+        log_partition_sum2 = max_scaled_cost2 + log(sum(exp(bsxfun(@minus,scaled_cost2,max_scaled_cost2)),2));
+</pre><h2 id="28">Joint log partition sum</h2><p>Determine joint log partition sum while avoiding underflow: <img src="main_cortex_parcellation_eq14109611573114866887.png" alt="$\log Z_{12} = \sum_i \log \sum_k \exp \left( -\beta ( R_{ik}^{(1)} + R_{ik}^{(2)} )  \right)$" style="width:202px;height:20px;"></p><pre class="codeinput">        joint_scaled_cost = -inv_temp * (potential1 + potential2);
+        <span class="comment">% log-sum-exp trick to prevent underflow</span>
+        max_scaled_cost3 = max(joint_scaled_cost,[],2);
+        log_joint_partition_sum = max_scaled_cost3 + log(sum(exp(bsxfun(@minus,joint_scaled_cost,max_scaled_cost3)),2));
+</pre><pre class="codeinput">        j = j+1;
+</pre><h2 id="30">Generalization capacity</h2><p>Resolution of the hypothesis space: <img src="main_cortex_parcellation_eq00804782376720270041.png" alt="$GC(\beta) := \log(k) + \frac{1}{n} \left( \log Z_{12} - \log Z_1 - \log Z_2 \right)$" style="width:224px;height:14px;"></p><pre class="codeinput">        gc{k}(j) = log(k) + sum(log_joint_partition_sum - log_partition_sum1 <span class="keyword">...</span>
+            - log_partition_sum2) ./ size(partition_sum1,1);
+</pre><pre class="codeinput">        <span class="comment">% pack</span>
+        inv_temp_pack(j) = inv_temp;
+        gibbs_dist_packed1{k}(:,:,j) = single(gibbs_dist1);
+        gibbs_dist_packed2{k}(:,:,j) = single(gibbs_dist2(:,match_clusters_idx));
+
+<span class="comment">%         gc_plot = gc{k}; %gc_plot(gc_plot&lt;0) = NaN;</span>
+<span class="comment">%         hold on; plot(inv_temp,gc_plot,'LineWidth',2); drawnow</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>
+</pre><h2 id="33">Number of equivariant transformations</h2><p>Richness of the hypothesis space: <img src="main_cortex_parcellation_eq11001603530755112468.png" alt="$\frac{1}{n} \log|\{\tau\}| = H(n_1/n,\ldots,n_k/n)$" style="width:151px;height:14px;"></p><pre class="codeinput">    gibbs_dist1 = round(gibbs_dist1);
+    d = sum(gibbs_dist1,1); d = d./sum(d); d(d==0) = 1;
+    nTransformations = -d * log(d)';
+
+    <span class="comment">% correct generalization capacity</span>
+    gc{k} = gc{k}-log(k)+nTransformations;
+</pre><pre class="codeinput">    <span class="comment">% transforming units from nats to bits</span>
+    gc{k} = gc{k} * log2(exp(1));
+</pre><h2 id="35">Information content (ASC)</h2><p>Quality of algorithm: <img src="main_cortex_parcellation_eq09743455593975302450.png" alt="$\mathcal{I} := \max_{\beta} GC(\beta)$" style="width:84px;height:12px;"></p><pre class="codeinput">    [info_content(k),max_gc_idx(k)] = max(gc{k});
+</pre><h2 id="36">Bayesian Information Criterion (BIC)</h2><p><img src="main_cortex_parcellation_eq09700827967035327629.png" alt="$BIC := m \times k \times ln (n) + 2 R(\mathbf{X},\hat{\theta})$" style="width:164px;height:14px;"> where <img src="main_cortex_parcellation_eq11319871188381094158.png" alt="$m$" style="width:10px;height:6px;"> is the number of bins and <img src="main_cortex_parcellation_eq17108415063982397339.png" alt="$c^{\perp}$" style="width:11px;height:10px;"> is the empirical risk minimizer</p><pre class="codeinput">    <span class="keyword">if</span> ~smooth_clustering
+        cost = sum(sum(gibbs_dist1 .* (-connectivity_matrix{1} * log(centroids1)')));
+    <span class="keyword">else</span>
+        cost = sum(sum(potential1(logical(gibbs_dist1))));
+    <span class="keyword">end</span>
+    BIC(k) = size(connectivity_matrix{1},2) * k * log(size(connectivity_matrix{1},1)) + 2 * cost;
+</pre><h2 id="37">Akaike Information Criterion (AIC)</h2><p><img src="main_cortex_parcellation_eq03357731097339886371.png" alt="$AIC := 2 \times m \times k + 2 R(\mathbf{X},\hat{\theta})$" style="width:143px;height:14px;"> where <img src="main_cortex_parcellation_eq11319871188381094158.png" alt="$m$" style="width:10px;height:6px;"> is the number of bins and <img src="main_cortex_parcellation_eq17108415063982397339.png" alt="$c^{\perp}$" style="width:11px;height:10px;"> is the empirical risk minimizer</p><pre class="codeinput">    AIC(k) = 2 * size(connectivity_matrix{1},2) * k + 2 * cost;
+</pre><h2 id="38">Bayesian evidence</h2><p><img src="main_cortex_parcellation_eq08403349875303284569.png" alt="$p(\mathbf{X} \mid \alpha) = \int p(\mathbf{X} \mid \phi) p(\theta \mid \alpha) d\phi = \prod_k \frac{B(\alpha_k + \mathbf{n}_k)}{B(\alpha_k)}$" style="width:220px;height:18px;"> where <img src="main_cortex_parcellation_eq08059537060765087149.png" alt="$\mathbf{n}_k := (n_{k1},n_{k2},\ldots,n_{kd})$" style="width:113px;height:11px;"> and <img src="main_cortex_parcellation_eq07727016875268873876.png" alt="$n_{kj} := \sum_{i:c(i)=k} x_{ij}$" style="width:86px;height:14px;"></p><pre class="codeinput">    [~,labels] = max(gibbs_dist1,[],2);
+    log_bayes_evidence{1}(k) = 0;
+    log_bayes_evidence{2}(k) = 0;
+    <span class="keyword">for</span> c = unique(labels)'
+        ncj = full(sum(connectivity_matrix{1}(labels==c,:),1));
+        alpha_tmp{1} = alpha{1}/k; alpha_tmp{1}(ncj==0) = [];
+        alpha_tmp{2} = alpha{2}; alpha_tmp{2}(ncj==0) = [];
+        ncj(ncj==0) = [];
+
+        log_bayes_evidence{1}(k) = log_bayes_evidence{1}(k) + sum(gammaln(alpha_tmp{1} + ncj)) <span class="keyword">...</span>
+            + gammaln(sum(alpha_tmp{1})) - gammaln(sum(alpha_tmp{1} + ncj)) - sum(gammaln(alpha_tmp{1}));
+        log_bayes_evidence{2}(k) = log_bayes_evidence{2}(k) + sum(gammaln(alpha_tmp{2} + ncj)) <span class="keyword">...</span>
+            + gammaln(sum(alpha_tmp{2})) - gammaln(sum(alpha_tmp{2} + ncj)) - sum(gammaln(alpha_tmp{2}));
+    <span class="keyword">end</span>
+</pre><h2 id="39">Number of misclustered seed voxels</h2><pre class="codeinput">    number_misclustered_objects(k) = sum(diag(round(gibbs_dist1)' * ~round(gibbs_dist2(:,match_clusters_idx))))/2;
+</pre><h2 id="40">Distance between centroids</h2><pre class="codeinput">    [~,max_gc_idx] = max(gc{k});
+    centroids_opt = double(gibbs_dist_packed1{k}(:,:,max_gc_idx))'*connectivity_matrix{1};
+    centroids_opt = bsxfun(@rdivide,centroids_opt,sum(centroids_opt,2));
+    centroids_opt(centroids_opt==0) = eps;
+</pre><h2 id="41">Results</h2><pre class="codeinput">    display_result(gc,info_content,gibbs_dist_packed1,gibbs_dist_packed2,inv_temp_pack,log_bayes_evidence,BIC,AIC,K(1:find(K==k)),<span class="keyword">...</span>
+        dsim,centroids_opt,number_misclustered_objects,seed_coords);
+</pre><pre class="codeoutput">Number of potential clusters: 2
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_01.png" style="width:1680px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 5
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_02.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 8
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_03.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 11
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_04.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 14
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_05.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 17
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_06.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 20
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_07.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 23
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_08.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 26
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_09.png" style="width:1700px;height:954px;" alt=""> <pre class="codeoutput">Number of potential clusters: 29
+</pre><img vspace="5" hspace="5" src="main_cortex_parcellation_10.png" style="width:1700px;height:954px;" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+</pre><h2 id="43">Runtime</h2><pre class="codeinput"><span class="comment">% display runtime</span>
+disp([<span class="string">'runtime: '</span> num2str(toc/60) <span class="string">' minutes on '</span> computer])
+</pre><pre class="codeoutput">runtime: 28.6007 minutes on MACI64
+</pre><pre class="codeinput"><span class="comment">% save resutls</span>
+<span class="comment">%save([path.results_directory 'parcellation.mat'],'gibbs_dist_packed1','gibbs_dist_packed2','gc','info_content','BIC','AIC','log_bayes_evidence','dsim_across_instances')</span>
+save([path.results_directory <span class="string">'parcellation.mat'</span>],<span class="string">'gibbs_dist_packed1'</span>,<span class="string">'gibbs_dist_packed2'</span>,<span class="string">'gc'</span>,<span class="string">'info_content'</span>,<span class="string">'BIC'</span>,<span class="string">'AIC'</span>,<span class="string">'log_bayes_evidence'</span>)
+
+</pre><h2 id="43">Video</h2>
+<video width="1300" controls>
+  <source src="cortex_parcellation.avi" type="video/avi">
+Your browser does not support the video tag.
+</video>
+
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% POSTERIOR AGREEMENT FOR CONNECTIVITY-BASED CORTEX PARCELLATION
+%
+% <<PA.png>>
+%
+% *Author: Nico Stephan Gorbach* , Institute of Machine Learning, ETHZ,
+% email: nico.gorbach@inf.ethz.ch
+%
+% Implementation of " *Pipeline Validation for Connectivity-based Cortex
+% Parcellation* " by Nico S. Gorbach, Marc Tittgemeyer and Joachim M.
+% Buhmann. The doctoral thesis
+% <https://www.research-collection.ethz.ch/handle/20.500.11850/261734>
+% describes this algorithm in more detail.
+%
+
+%%
+clear all; close all
+
+%% Introduction
+% This instuctional code demonstrates validation by posterior agreement for connectivity-based cortex
+% parcellation of diffusion weighted imaging data. We assume that a
+% connectivity matrix is given. In particular, we validate histogram
+% clustering. Additionally, we provide the option of validating smooth
+% histogram clustering (by setting smooth_clustering=true in the input) which 
+% adds a spatial regularity to the seed voxels.
+  
+%% Input
+path.connectivity_matrix = './5203/neighbourhood_tracking/45_directions/connectivity_matrix.mat';    % path to connectivity matrix
+path.seed_coords = './5203/neighbourhood_tracking/45_directions/seed_coords.txt';                    % path to seed coordinates
+path.results_directory = './5203/neighbourhood_tracking/45_directions/';                             % directory to save results                                        
+K = 2:3:29;                                                     % number of potential clusters (vector of integers)
+
+% Smooth histogram clustering
+smooth_clustering = false;                                    % perform standard histogram clustering or smooth histogram clustering (Boolean)  
+smooth_weighting = 10;                                        % weight of the smoothness penalty (real positive number) 
+number_of_neighbours = 80;                                    % number of neighbours %20,50,80
+
+%% Imports
+connectivity_matrix = importdata(path.connectivity_matrix);
+seed_coords = importdata(path.seed_coords);
+
+%% Distance between connectivity matrices
+seed_idx = randperm(size(connectivity_matrix{1},1)); seed_idx = sort(seed_idx(1:1000));
+p = bsxfun(@rdivide,connectivity_matrix{1}(seed_idx,:),sum(connectivity_matrix{1}(seed_idx,:),2));
+q = bsxfun(@rdivide,connectivity_matrix{2}(seed_idx,:),sum(connectivity_matrix{2}(seed_idx,:),2));
+for i = 1:size(p,1)
+    dsim_across_instances.JSDiv(i) = JSDiv(p(i,:),q(i,:));
+    dsim_across_instances.euclid(i) = pdist2(p(i,:),q(i,:));
+    dsim_across_instances.hamming = pdist2(double(logical(p(i,:))),double(logical(q(i,:))),'hamming');
+end
+
+disp(['Average Jenson Shannon distance between connectivity matrices: ' num2str(mean(dsim_across_instances.JSDiv))]);
+disp(['Average Euclidean distance between connectivity matrices: ' num2str(mean(dsim_across_instances.euclid))]);
+disp(['Average Hamming distance between connectivity matrices: ' num2str(mean(dsim_across_instances.hamming))]);
+% 
+%% Nearest neighbours for smooth histogram clustering
+if smooth_clustering
+    dsim_seed_coords = pdist2(seed_coords,seed_coords);
+    dsim_seed_coords(logical(eye(size(dsim_seed_coords,1)))) = realmax;
+    [nearest_neighbours.dist,nearest_neighbours.idx] = sort(dsim_seed_coords,2,'ascend');
+    nearest_neighbours.dist = nearest_neighbours.dist(:,1:number_of_neighbours);
+    nearest_neighbours.idx = nearest_neighbours.idx(:,1:number_of_neighbours);
+end
+
+%%
+
+% remove zero columns
+rm_idx(1,:) = sum(connectivity_matrix{1},1)==0;
+rm_idx(2,:) = sum(connectivity_matrix{2},1)==0;
+connectivity_matrix{1}(:,rm_idx(1,:)) = [];
+connectivity_matrix{2}(:,rm_idx(2,:)) = [];
+
+%%
+
+% dissimilarity matrix
+if exist([path.results_directory 'dsim.mat1'])
+    dsim = importdata([path.results_directory 'dsim.mat']);
+else
+    %d = connectivity_matrix{1}; d(:,sum(d,1)<4000) = [];
+    d = connectivity_matrix{1}; d(:,sum(d,1)<600) = []; d = single(full(d));
+    dsim = pdist2(d,d);
+%     d = bsxfun(@rdivide,d,sum(d,2));
+%     log_d = d; log_d(log_d==0) = eps; log_d = log(log_d);
+%     dsim = single(full(-d * log_d'));
+%     dsim = flipdim(flipdim((dsim + dsim') / 2,1),2);
+%     dsim(logical(eye(size(dsim,1)))) = mean(mean(dsim));
+%     save([path.results_directory 'dsim.mat'],'dsim','-v7.3');
+%     clear d log_d
+end
+%%
+
+% preprocessing for Bayesian evidence
+
+alpha{1} = full(sum(connectivity_matrix{1},1));
+alpha{2} = full(sum(connectivity_matrix{1},1))/100;
+%%
+
+% start timer
+tic;
+
+%% Deterministic annealing
+% Determine global minimizer.
+
+% Annealing settings
+inv_temp_init = 1/1000;                 % starting inverse temperature (5000 for smooth hc)
+inv_temp_step = 1.1;                    % inverse temperature step
+inv_temp_stop = 1/10;                   % stopping inverse temperature
+perturb_sd = 1e-6;                      % centroid perturbation
+
+for k = K
+    
+    % Initialization of Gibbs distributions
+    gibbs_dist1 = ones(size(connectivity_matrix{1},1),k) ./ k;
+    gibbs_dist2 = ones(size(connectivity_matrix{2},1),k) ./ k;
+    
+    % Initialization of centroids
+    centroids1 = gibbs_dist1'*connectivity_matrix{1};
+    centroids1 = bsxfun(@rdivide,centroids1,sum(centroids1,2)); 
+    centroids1(centroids1==0) = eps;
+    centroids2 = gibbs_dist2'*connectivity_matrix{2};
+    centroids2 = bsxfun(@rdivide,centroids2,sum(centroids2,2)); 
+    centroids2(centroids2==0) = eps;
+    
+    j = 0; inv_temp = inv_temp_init; inv_temp_pack = []; %subplot(2,2,3); cla
+    while inv_temp <= inv_temp_stop
+        
+        %%% Perturb centroids
+        % Avoid local minimum by perturbing centroids:
+        % $\phi_{kj}^{(\cdot)} = \phi_{kj}^{(\cdot)} + \epsilon$
+        centroids1 = centroids1 + perturb_sd * rand(size(centroids1)); 
+        centroids1 = bsxfun(@rdivide,centroids1,sum(centroids1,2)); % normalize
+        centroids2 = centroids2 + perturb_sd * rand(size(centroids2)); 
+        centroids2 = bsxfun(@rdivide,centroids2,sum(centroids2,2)); % normalize
+
+        %% Expectation maximization
+        % Iterate between determining Gibbs distributions and maximzing
+        % variational lower bound w.r.t. centroids.
+        for iter = 1:10
+         
+            %%% Costs for histogram clustering given instance 1
+            % KL divergence between empirical probabilities (data) and
+            % centroid probabilities (up to proportionality constant):
+            % $R_{ik}^{(1)} = -\sum_{j} x_{ij}^{(1)} \log(\phi_{kj}^{(1)})$
+            potential1 = -connectivity_matrix{1} * log(centroids1)';
+            
+            %%% Costs for histogram clustering given instance 2
+            % KL divergence between empirical probabilities (data) and
+            % centroid probabilities (up to proportionality constant):
+            % $R_{ik}^{(2)} = -\sum_{j} x_{ij}^{(2)} \log(\phi_{kj}^{(2)})$
+            potential2 = -connectivity_matrix{2} * log(centroids2)'; 
+           
+            %%% Smoothness potential
+            if smooth_clustering
+                smooth_potential1 = blockfun(1-gibbs_dist1(nearest_neighbours.idx',:),...
+                    [size(nearest_neighbours.idx,2),1],@sum);
+                
+                smooth_potential2 = blockfun(1-gibbs_dist2(nearest_neighbours.idx',:),...
+                    [size(nearest_neighbours.idx,2),1],@sum);
+               
+                potential1 = potential1 + smooth_weighting * smooth_potential1;
+                potential2 = potential2 + smooth_weighting * smooth_potential2;
+            end
+            
+            %%% Gibbs distribution 1
+            % Maximum entropy distribution:
+            % $p_{ik}^{(1)} = \exp \left( -\beta R_{ik}^{(1)} \right) / Z$
+            gibbs_dist1 = exp(-inv_temp * potential1);
+            partition_sum1 = sum(gibbs_dist1,2);
+            gibbs_dist1 = bsxfun(@rdivide,gibbs_dist1,partition_sum1);
+            
+            % avoid underflow
+            idx = find(partition_sum1==0);
+            if ~isempty(idx)
+                [~,min_cost_idx] = min(potential1(idx,:),[],2); 
+                max_ind = sub2ind(size(gibbs_dist1),idx,min_cost_idx);
+                gibbs_dist1(idx,:) = zeros(length(idx),k);  
+                gibbs_dist1(max_ind) = 1;
+            end
+
+            %%% Gibbs distribution 2
+            % Maximum entropy distribution:
+            % $p_{ik}^{(2)} = \exp \left(-\beta R_{ik}^{(2)} \right) / Z$
+            gibbs_dist2 = exp(-inv_temp * potential2);
+            partition_sum2 = sum(gibbs_dist2,2);
+            gibbs_dist2 = bsxfun(@rdivide,gibbs_dist2,partition_sum2);
+            
+            % avoid underflow
+            idx = find(partition_sum2==0);
+            if ~isempty(idx)
+                [~,min_cost_idx] = min(potential2(idx,:),[],2); 
+                max_ind = sub2ind(size(gibbs_dist2),idx,min_cost_idx);
+                gibbs_dist2(idx,:) = zeros(length(idx),k);  
+                gibbs_dist2(max_ind) = 1;
+            end
+
+            %%% Joint Gibbs distribution
+            % Maximum entropy distribution:
+            % $p_{ik}^{(1,2)} = \exp \left(-\beta (
+            % R_{ik}^{(1)} + R_{ik}^{(2)}) \right) / Z$
+            dist_joint = exp(-inv_temp * (potential1 + potential2));
+            joint_partition_sum = sum(dist_joint,2);
+            
+            %%% Centroids for instance 1
+            % Probability prototype:
+            % $\phi_{kj}^{(1)} = \frac{\sum_i p_{ik}^{(1)} x_{ij}^{(1)}}{\sum_j \sum_{i'} p_{i'k}^{(1)} x_{i'j}^{(1)}}$
+            centroids1 = gibbs_dist1'*connectivity_matrix{1};
+            centroids1 = bsxfun(@rdivide,centroids1,sum(centroids1,2)); 
+            centroids1(centroids1==0) = eps;
+            
+            %%% Centroids for instance 2
+            % Probability prototype:
+            % $\phi_{kj}^{(2)} = \frac{\sum_i p_{ik}^{(2)} x_{ij}^{(2)}}{\sum_j \sum_{i'} p_{i'k}^{(2)} x_{i'j}^{(2)}}$
+            centroids2 = gibbs_dist2'*connectivity_matrix{2};
+            centroids2 = bsxfun(@rdivide,centroids2,sum(centroids2,2)); 
+            centroids2(centroids2==0) = eps;     
+        end
+        
+        %%
+        
+        % increase inverse temperature:
+        inv_temp = inv_temp * inv_temp_step;
+
+        %%% Match clusters across data instances
+        % Use Hungarian algorithm to match clusters.
+        c1 = zeros(k,length(rm_idx(1,:))); c2 = zeros(k,length(rm_idx(2,:)));
+        c1(:,~rm_idx(1,:)) = centroids1; c2(:,~rm_idx(2,:)) = centroids2;
+        match_clusters_idx = munkres(pdist2(c1,c2));
+        potential2=potential2(:,match_clusters_idx);
+        
+        %%% Log partition sum for instance 1
+        % Determine log partition sum while avoiding underflow:
+        % $\log Z_1 = \sum_i \log \sum_k \exp \left( -\beta R_{ik}^{(1)} \right)$
+        scaled_cost1 = -inv_temp * potential1;
+        % log-sum-exp trick to prevent underflow
+        max_scaled_cost1 = max(scaled_cost1,[],2);
+        log_partition_sum1 = max_scaled_cost1 + log(sum(exp(bsxfun(@minus,scaled_cost1,max_scaled_cost1)),2));
+        
+        %%% Log partition sum for instance 2
+         % Determine log partition sum while avoiding underflow:
+        % $\log Z_2 = \sum_i \log \sum_k \exp \left( -\beta R_{ik}^{(2)} \right)$
+        scaled_cost2 = -inv_temp * potential2;
+        % log-sum-exp trick to prevent underflow
+        max_scaled_cost2 = max(scaled_cost2,[],2);
+        log_partition_sum2 = max_scaled_cost2 + log(sum(exp(bsxfun(@minus,scaled_cost2,max_scaled_cost2)),2));
+        
+        %%% Joint log partition sum
+        % Determine joint log partition sum while avoiding underflow:
+        % $\log Z_{12} = \sum_i \log \sum_k \exp \left( -\beta ( R_{ik}^{(1)} + R_{ik}^{(2)} )  \right)$
+        joint_scaled_cost = -inv_temp * (potential1 + potential2);
+        % log-sum-exp trick to prevent underflow
+        max_scaled_cost3 = max(joint_scaled_cost,[],2);
+        log_joint_partition_sum = max_scaled_cost3 + log(sum(exp(bsxfun(@minus,joint_scaled_cost,max_scaled_cost3)),2));
+       
+        %%
+        
+        j = j+1;
+        
+        %%% Generalization capacity
+        % Resolution of the hypothesis space:
+        % $GC(\beta) := \log(k) + \frac{1}{n} \left( \log Z_{12} - \log Z_1 - \log Z_2 \right)$
+        gc{k}(j) = log(k) + sum(log_joint_partition_sum - log_partition_sum1 ...
+            - log_partition_sum2) ./ size(partition_sum1,1);
+        
+        %%
+        
+        % pack
+        inv_temp_pack(j) = inv_temp;
+        gibbs_dist_packed1{k}(:,:,j) = single(gibbs_dist1);
+        gibbs_dist_packed2{k}(:,:,j) = single(gibbs_dist2(:,match_clusters_idx));
+        
+%         gc_plot = gc{k}; %gc_plot(gc_plot<0) = NaN;
+%         hold on; plot(inv_temp,gc_plot,'LineWidth',2); drawnow
+
+    end
+
+    %% Number of equivariant transformations
+    % Richness of the hypothesis space: 
+    % $\frac{1}{n} \log|\{\tau\}| = H(n_1/n,\ldots,n_k/n)$
+    gibbs_dist1 = round(gibbs_dist1);
+    d = sum(gibbs_dist1,1); d = d./sum(d); d(d==0) = 1;
+    nTransformations = -d * log(d)';
+    
+    % correct generalization capacity
+    gc{k} = gc{k}-log(k)+nTransformations;
+    
+    %%
+    
+    % transforming units from nats to bits
+    gc{k} = gc{k} * log2(exp(1));
+    %% Information content (ASC)
+    % Quality of algorithm: 
+    % $\mathcal{I} := \max_{\beta} GC(\beta)$
+    [info_content(k),max_gc_idx(k)] = max(gc{k}); 
+    
+    %% Bayesian Information Criterion (BIC)
+    % $BIC := m \times k \times ln (n) + 2 R(\mathbf{X},\hat{\theta})$ where $m$ is the 
+    % number of bins and $c^{\perp}$ is the empirical risk minimizer
+    
+    if ~smooth_clustering
+        cost = sum(sum(gibbs_dist1 .* (-connectivity_matrix{1} * log(centroids1)')));
+    else
+        cost = sum(sum(potential1(logical(gibbs_dist1))));
+    end
+    BIC(k) = size(connectivity_matrix{1},2) * k * log(size(connectivity_matrix{1},1)) + 2 * cost;
+    
+    %% Akaike Information Criterion (AIC)
+    % $AIC := 2 \times m \times k + 2 R(\mathbf{X},\hat{\theta})$ where $m$ is the 
+    % number of bins and $c^{\perp}$ is the empirical risk minimizer
+    
+    AIC(k) = 2 * size(connectivity_matrix{1},2) * k + 2 * cost;
+    
+    %% Bayesian evidence
+    % $p(\mathbf{X} \mid \alpha) = \int p(\mathbf{X} \mid \phi)
+    % p(\theta \mid \alpha) d\phi = \prod_k \frac{B(\alpha_k +
+    % \mathbf{n}_k)}{B(\alpha_k)}$ where $\mathbf{n}_k := (n_{k1},n_{k2},\ldots,n_{kd})$
+    % and $n_{kj} := \sum_{i:c(i)=k} x_{ij}$
+    
+    [~,labels] = max(gibbs_dist1,[],2);
+    log_bayes_evidence{1}(k) = 0;
+    log_bayes_evidence{2}(k) = 0;
+    for c = unique(labels)'
+        ncj = full(sum(connectivity_matrix{1}(labels==c,:),1));
+        alpha_tmp{1} = alpha{1}/k; alpha_tmp{1}(ncj==0) = [];
+        alpha_tmp{2} = alpha{2}; alpha_tmp{2}(ncj==0) = [];
+        ncj(ncj==0) = [];
+        
+        log_bayes_evidence{1}(k) = log_bayes_evidence{1}(k) + sum(gammaln(alpha_tmp{1} + ncj)) ...
+            + gammaln(sum(alpha_tmp{1})) - gammaln(sum(alpha_tmp{1} + ncj)) - sum(gammaln(alpha_tmp{1}));
+        log_bayes_evidence{2}(k) = log_bayes_evidence{2}(k) + sum(gammaln(alpha_tmp{2} + ncj)) ...
+            + gammaln(sum(alpha_tmp{2})) - gammaln(sum(alpha_tmp{2} + ncj)) - sum(gammaln(alpha_tmp{2}));
+    end
+    %% Number of misclustered seed voxels
+    
+    number_misclustered_objects(k) = sum(diag(round(gibbs_dist1)' * ~round(gibbs_dist2(:,match_clusters_idx))))/2;
+    
+    %% Distance between centroids
+    [~,max_gc_idx] = max(gc{k});
+    centroids_opt = double(gibbs_dist_packed1{k}(:,:,max_gc_idx))'*connectivity_matrix{1};
+    centroids_opt = bsxfun(@rdivide,centroids_opt,sum(centroids_opt,2));
+    centroids_opt(centroids_opt==0) = eps;
+    
+    %% Results
+    display_result(gc,info_content,gibbs_dist_packed1,gibbs_dist_packed2,inv_temp_pack,log_bayes_evidence,BIC,AIC,K(1:find(K==k)),...
+        dsim,centroids_opt,number_misclustered_objects,seed_coords);
+end
+
+%% Runtime
+
+% display runtime
+disp(['runtime: ' num2str(toc/60) ' minutes on ' computer])
+
+%%
+
+% save resutls
+%save([path.results_directory 'parcellation.mat'],'gibbs_dist_packed1','gibbs_dist_packed2','gc','info_content','BIC','AIC','log_bayes_evidence','dsim_across_instances')
+save([path.results_directory 'parcellation.mat'],'gibbs_dist_packed1','gibbs_dist_packed2','gc','info_content','BIC','AIC','log_bayes_evidence')
+
+##### SOURCE END #####
+--></body></html>
