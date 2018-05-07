@@ -31,6 +31,6 @@ Run the Matlab script *main_cortex_parcellation.m* in the *empirical* folder or 
 
 <div align="left">
 
-Sample Result
-=======
+## Sample Result
+
 ![Alt text](sample_result.png)
