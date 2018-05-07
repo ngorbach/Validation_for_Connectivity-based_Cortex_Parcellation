@@ -8,6 +8,10 @@ Validation for Connectivity-based Cortex Parcellation by Posterior Agreement
 Author: **Nico Stephan Gorbach**
 
 <hr>
+<div align="left">
+Contents
+=======
+
 <p align="justify">
 Sample code for the paper **Pipeline Validation for Connectivity-based Cortex Parcellation** by Nico S. Gorbach, Marc Tittgemeyer and Joachim M. Buhmann (in submission). The doctoral thesis https://www.research-collection.ethz.ch/handle/20.500.11850/261734 contains more detailed descriptions and derivations.
 
@@ -20,6 +24,6 @@ Run the Matlab script *main_cortex_parcellation.m* in the *empirical* folder or 
 
 <div align="left">
 
-Sample result:
+Sample Result:
 =======
 ![Alt text](sample_result.png)
