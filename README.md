@@ -10,6 +10,11 @@ The Matlab image processing toolbox is required.
 
 Run the Matlab script *main_cortex_parcellation.m* in the *empirical* folder or one of the Matlab scripts *main_1D_connectivity*, *main_probability_simplex* or *main_anatomical_context* in the subfolders contained in the *simulations* folder.
 
-Sample results:
+
+
+
+
+
+Sample result:
 
 ![Alt text](sample_result.png)
