@@ -4,8 +4,6 @@
 
 # Validation for Connectivity-based Cortex Parcellation by Posterior Agreement
 
-
-<h2 align="center"></h2>
 <p align="center">
   <a href="https://ngorbach.github.io/Validation_for_Connectivity-based_Cortex_Parcellation/"><b>code documentation</b></a> |
   <a href="https://www.research-collection.ethz.ch/handle/20.500.11850/261734"><b>doctoral thesis</b></a> 
