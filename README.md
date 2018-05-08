@@ -34,4 +34,5 @@ Run the Matlab script *main_cortex_parcellation.m* in the *empirical* folder or 
 ![Alt text](sample_result.png)
 
 <hr>
+
 ## Author: Nico Stephan Gorbach
