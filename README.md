@@ -1,6 +1,6 @@
 <div align="center">
 
-![Alt text](logo.png)
+![Alt text](docs/logo.png)
 
 # Validation for Connectivity-based Cortex Parcellation by Posterior Agreement
 
