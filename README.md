@@ -2,7 +2,7 @@
 
 ![Alt text](docs/logo.png)
 
-# Validation for Connectivity-based Cortex Parcellation by Posterior Agreement
+# Validation for Connectivity-based Cortex Parcellation
 
 <p align="center">
   <a href="https://ngorbach.github.io/Validation_for_Connectivity-based_Cortex_Parcellation/"><b>code documentation</b></a> |
