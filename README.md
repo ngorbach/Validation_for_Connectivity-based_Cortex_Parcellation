@@ -1,9 +1,9 @@
 <div align="center">
 
+![Alt text](PA.png)
+
 # Validation for Connectivity-based Cortex Parcellation by Posterior Agreement
 
-
-![Alt text](PA.png)
 
 <h2 align="center"></h2>
 <p align="center">
