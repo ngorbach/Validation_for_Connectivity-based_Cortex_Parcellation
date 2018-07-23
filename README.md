@@ -18,7 +18,7 @@
 
 <div align="justify">
 
-Sample code for the paper <a href="a href="https://www.sciencedirect.com/science/article/pii/S1053811918305731"><b>Pipeline Validation for Connectivity-based Cortex Parcellation</b></a> by Nico S. Gorbach, Marc Tittgemeyer and Joachim M. Buhmann (in submission).
+Sample code for the paper <a href="https://www.sciencedirect.com/science/article/pii/S1053811918305731"><b>Pipeline Validation for Connectivity-based Cortex Parcellation</b></a> by Nico S. Gorbach, Marc Tittgemeyer and Joachim M. Buhmann (in submission).
 
 Run the Matlab script *main_cortex_parcellation.m* in the *empirical* folder or one of the Matlab scripts *main_1D_connectivity*, *main_probability_simplex* or *main_anatomical_context* in the subfolders contained in the *simulations* folder. The Matlab image processing toolbox is required.
 
